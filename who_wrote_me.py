@@ -1,9 +1,12 @@
-import machine_learn
-import lexicography
+import model
+import stylometry
 import gui
 
-# if there is a model - continue
-# if not train one
+
+
+
+# load models
+# start program
 
 # here we'll just call the gui
 # this will be the starting file

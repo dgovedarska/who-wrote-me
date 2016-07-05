@@ -1,40 +1,105 @@
-class WhoWroteMe:
-    models = [];
-    modelStatistics = {};
-    modelsDir = "";
+import stylometry
+import nltk
+import pickle
+import os
+from nltk.classify.scikitlearn import SklearnClassifier
+from nltk.corpus import gutenberg
 
-    # Load a directory with learning resourses, run a lexicographical analysis on it and store the results
-    # Directory tree format author/text.txt
-    def loadAndAnalyzeDir(self, directory, modelStatistics): pass
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
 
-    # Load a file, analyze it and return the statistics for it
-    def loadAndAnalyzeFile(self, file): pass
+# TODO Voting
+# TODO hardcoded paths
+# TODO improve loading and saving
 
-    # Make prediction for text author with current model - returns author
-    def makePrediction(self, model, statistics): pass
+#again class and if models are not yet trained - train them and tell the user - can be demonstrated because it's relatively fast
 
-    # Load premade models from a directory
-    def loadModels(self): pass
+class Models:
+    models = {} # that's a dict
+    text_features = []
 
-    # Select model based on hints
-    def selectModel(self): pass
+    def __init__(self, text_features):
+        self.text_features = text_features
+        if os.path.exists("./models/"):
+            print("Prediction models exist. Loading them...")
+            self.load_models()
+            print("Prediction models loaded.")
+        else:
+            print("Trained prediction models not found. Training them... (this might take a while)")
+            self.models["Multinomial Nayve Bayes Classifier"] = SklearnClassifier(MultinomialNB())
+            self.models["Logistic Regression Classifier"] = SklearnClassifier(LogisticRegression())
+            self.models["K-Nearest-Neighbors Classifier"] = SklearnClassifier(KNeighborsClassifier())
+            self.models["Linear SVC Classifier"] = SklearnClassifier(LinearSVC())
 
-    # Generate a model from with given statistics + metadata
-    def generateModel(self, learningData, modelStatistics): pass
+            self.train_models()
+            self.save_models()
+            print("Training done.")
+    
+    def predict(self, text_features, algorythm="Voting Classifier"):
+        return self.models[algorythm].classify(text_features)
 
-class Model:
-    # Creates a model based on a given learning data and statistics
-    def createModel(self, learningData, modelStatistics): pass
+    
+    def calculate_accuracy(self): pass
+        # show the accuracy of all algorythms - it may change after more authors are added thus they have to be retrained on the new set
+        # authors with just one book should be removed when testing
+    
+    def train_models(self):
+        for classifier in self.models:
+            self.models[classifier].train(self.text_features)
+    
+    def load_models(self):
+    # Exception handling
+    # Voting one as well
+        MNB_classifier_file = open("./models/MNB_classifier.pickle", "rb")
+        MNB_classifier = pickle.load(MNB_classifier_file)
+        MNB_classifier_file.close()
+        self.models["Multinomial Nayve Bayes Classifier"] = MNB_classifier
 
-    # Export model as a file
-    def exportModel(self, file): pass
+        LR_classifier_file = open("./models/LR_classifier.pickle", "rb")
+        LR_classifier = pickle.load(LR_classifier_file)
+        LR_classifier_file.close()
+        self.models["Logistic Regression Classifier"] = LR_classifier
 
-    # Import model from a file
-    def importModel(self, file): pass
+        KNN_classifier_file = open("./models/KNN_classifier.pickle", "rb")
+        KNN_classifier = pickle.load(KNN_classifier_file)
+        KNN_classifier_file.close()
+        self.models["K-Nearest-Neighbors Classifier"] = KNN_classifier
 
-    # Make prediction with a given model and statistics
-    def makePrediction(self, textStatistics): pass
+        LSVC_classifier_file = open("./models/LSVC_classifier.pickle", "rb")
+        LSVC_classifier = pickle.load(LSVC_classifier_file)
+        LSVC_classifier_file.close()
+        self.models["Linear SVC Classifier"] = LSVC_classifier
 
-    # <Obj> model // type depends on library
+    def save_models(self):
+        #Exception handling
+        #Voting algorythm as well
+        if not os.path.exists("./models"):
+            os.makedirs("./models")
+        MNB_classifier_file = open("./models/MNB_classifier.pickle", "wb")
+        pickle.dump(self.models["Multinomial Nayve Bayes Classifier"], MNB_classifier_file)
+        MNB_classifier_file.close()
 
-# I haven't decided which machine learning algorithm to use yet. This is still open for research.
+        LSVC_classifier_file = open("./models/LSVC_classifier.pickle", "wb")
+        pickle.dump(self.models["Linear SVC Classifier"], LSVC_classifier_file)
+        LSVC_classifier_file.close()
+
+        LR_classifier_file = open("./models/LR_classifier.pickle", "wb")
+        pickle.dump(self.models["Logistic Regression Classifier"], LR_classifier_file)
+        LR_classifier_file.close()
+
+        KNN_classifier_file = open("./models/KNN_classifier.pickle", "wb")
+        pickle.dump(self.models["K-Nearest-Neighbors Classifier"], KNN_classifier_file)
+        KNN_classifier_file.close()
+
+ta = stylometry.Text_Analysis()
+#print(ta.text_features_library)
+
+m = Models(ta.text_features_library)
+m.save_models()
+files = gutenberg.fileids()
+print(files[27])
+print(ta.text_features(files[27]))
+print(m.predict(ta.text_features(files[27]), "Logistic Regression Classifier"))
+
