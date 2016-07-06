@@ -3,18 +3,43 @@ import nltk
 import pickle
 import os
 from nltk.classify.scikitlearn import SklearnClassifier
+from nltk.classify import ClassifierI
 from nltk.corpus import gutenberg
+from statistics import mode
 
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 
-# TODO Voting
+# TODO more algos
 # TODO hardcoded paths
 # TODO improve loading and saving
+# TODO rename them to classifiers
 
 #again class and if models are not yet trained - train them and tell the user - can be demonstrated because it's relatively fast
+
+class vote_classifier(ClassifierI):
+    def __init__(self, classifiers):
+        self._classifiers = classifiers
+    
+    def classify(self, text_features):
+        votes = []
+        for classifier in self._classifiers:
+            vote = classifier.classify(text_features)
+            votes.append(vote)
+        print(votes)
+        print(mode(votes))
+        return mode(votes)
+    
+    def confidence(self, features):
+        votes = []
+        for classifier in self._classifiers:
+            votes.append(classifier.predict(text_features))
+        
+        choice_votes = votes.count(mode(votes))
+        confidence_percent = choice_votes / len(votes)
+        return confidence_percent
 
 class Models:
     models = {} # that's a dict
@@ -99,7 +124,16 @@ ta = stylometry.Text_Analysis()
 m = Models(ta.text_features_library)
 m.save_models()
 files = gutenberg.fileids()
-print(files[27])
-print(ta.text_features(files[27]))
-print(m.predict(ta.text_features(files[27]), "Logistic Regression Classifier"))
+print(files[20])
+print(ta.text_features(files[20]))
+print(m.predict(ta.text_features(files[20]), "Logistic Regression Classifier"))
 
+models = []
+for key in m.models:
+    models.append(m.models[key])
+
+
+vc = vote_classifier(models)
+#print(vc._classifiers)
+
+print(vc.classify(ta.text_features(files[20])))
