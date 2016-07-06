@@ -118,6 +118,8 @@ class Models:
         pickle.dump(self.models["K-Nearest-Neighbors Classifier"], KNN_classifier_file)
         KNN_classifier_file.close()
 
+
+'''
 ta = stylometry.Text_Analysis()
 #print(ta.text_features_library)
 
@@ -137,3 +139,4 @@ vc = vote_classifier(models)
 #print(vc._classifiers)
 
 print(vc.classify(ta.text_features(files[20])))
+'''

@@ -1,0 +1,6 @@
+_________________________________________
+| Author recognition:                   |
+|  1. Recognize author                  |
+|  2. Back to main menu                 |
+|  3. Exit                              |
+_________________________________________

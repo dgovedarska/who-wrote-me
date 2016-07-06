@@ -1,0 +1,8 @@
+_________________________________________
+| Choose algorythm:                     |
+|  1. Multinomial Naive Bayes           |
+|  2. Logistic Regression               |
+|  3. K-Nearest-Neighbors               |
+|  4. Linear SVC                        |
+|  5. Vote                              |
+_________________________________________

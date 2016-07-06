@@ -1,0 +1,7 @@
+_________________________________________
+| Main Menu:                            |
+|  1. Author recognition                |
+|  2. Library                           |
+|  3. Algorythm accuracy                |
+|  4. Exit                              |
+_________________________________________
