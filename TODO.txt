@@ -1,3 +1,5 @@
-# models must be saved in a different folder
-# stats should also be saved in a different folder
+# file locations as constants
 # all files beside  the main should go into lib
+# input checks in ui
+# Fix author names
+# Exceptions

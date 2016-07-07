@@ -16,7 +16,6 @@ from nltk.classify.scikitlearn import SklearnClassifier
 
 class Text_Analysis:
     text_features_library = {}
-    authors = () #better a set
 
     def __init__(self):
         if os.path.exists("./text_features_library/features.pickle"):
@@ -80,7 +79,13 @@ class Text_Analysis:
         for text in texts:
             self.text_features_library.append((self.text_features(text), author))
         save_text_features()
-        
+
+    def get_authors(self):
+        authors = []
+        for entry in self.text_features_library:
+            authors.append(entry[1])
+        return set(authors)
+      
     def save_text_features(self):
         if not os.path.exists("./text_features_library"):
             os.makedirs("./text_features_library")
@@ -92,4 +97,4 @@ class Text_Analysis:
 #This works ok so far :)))
 
 #ta = Text_Analysis()
-#print(ta.text_features_library)
+#print(ta.get_authors())

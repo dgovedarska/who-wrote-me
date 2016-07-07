@@ -1,49 +1,60 @@
 import model
 import stylometry
+import accuracy
 import os 
 
 UIS_LOCATION = './ui/'
 # This will be PyQT4 one day yay.
 
 class ui:
-    def __init__(self, models, text_analysis):
+    def __init__(self, models, text_analysis, accuracy):
         self._models = models
         self._text_analysis = text_analysis
+        self._accuracy = accuracy
         self.initialize_menus()
         self.initialize_menu_choices()
         self.main_menu()
     
     def main_menu(self):
         print(self._main_menu)
-        choice = input()
+        choice = input('Select an option: ')
         self._main_menu_choices[int(choice)]()
 
     def prediction_menu(self): 
         print(self._prediction_menu)
-        choice = input()
+        choice = input('Select an option: ')
         self._prediction_menu_choices[int(choice)]()
 
     def expand_library_menu(self):
         print(self._library_menu)
-        choice = input()
+        choice = input('Select an option: ')
         self._library_menu_choices[int(choice)]()
 
     def exit(self):
         print("Goodbye!")
 
-    def prompt_input(): pass
-
     def check_bad_input(self): pass
 
-    def add_author(self): pass
+    def add_author(self):
+        author_name = input('Enter author name: ')
+        print(author_name)
+        text_files_str = input('Enter authors text(s): ')
+        text_files = text_files_str.split(' ')
+
+        print('Author successfuly added!')
+        self.main_menu()
 
     def predict(self): pass
         #display algo choice
         #input file then
 
-    def display_accuracy(self): pass
+    def display_accuracy(self):
+        self._accuracy.test_accuracy()
+        self.main_menu()
 
-    def display_authors(self): pass
+    def display_authors(self):
+        print(self._text_analysis.get_authors())
+        self.main_menu()
 
     def initialize_menus(self):
         self._main_menu = self.load_menu('main_menu.txt')
@@ -69,8 +80,9 @@ class ui:
 print("Welcome to Who Wrote Me v0.1.0")
 text_analysis = stylometry.Text_Analysis()
 models = model.Models(text_analysis.text_features_library)
+accuracy = accuracy.accuracy()
 
-u = ui(models, text_analysis)
+u = ui(models, text_analysis, accuracy)
 
 
 
