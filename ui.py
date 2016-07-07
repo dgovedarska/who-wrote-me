@@ -4,6 +4,8 @@ import accuracy
 import os 
 
 UIS_LOCATION = './ui/'
+algos = {1: "Multinomial Nayve Bayes Classifier", 2: "Logistic Regression Classifier", 3: "K-Nearest-Neighbors Classifier",
+4: "Linear SVC Classifier", 5: "Vote Classifier"}
 # This will be PyQT4 one day yay.
 
 class ui:
@@ -36,24 +38,30 @@ class ui:
     def check_bad_input(self): pass
 
     def add_author(self):
+        # TODO massive error handling
         author_name = input('Enter author name: ')
-        print(author_name)
         text_files_str = input('Enter authors text(s): ')
         text_files = text_files_str.split(' ')
+        self._text_analysis.add_author(author_name, set(text_files))
 
         print('Author successfuly added!')
         self.main_menu()
 
-    def predict(self): pass
-        #display algo choice
-        #input file then
+    def predict(self):
+        print(self._algorythm_menu)
+        choice = int(input('Select an option: '))
+        algorythm = algos[choice]
+        book = str(input('Enter book: '))
+
+        print("Author is: ", self._models.predict(self._text_analysis.text_features(book), algorythm))
+        self.prediction_menu()
 
     def display_accuracy(self):
         self._accuracy.test_accuracy()
         self.main_menu()
 
     def display_authors(self):
-        print(self._text_analysis.get_authors())
+        print(sorted(self._text_analysis.get_authors()))
         self.main_menu()
 
     def initialize_menus(self):

@@ -62,17 +62,13 @@ class Models:
             self.save_models()
             print("Training done.")
     
-    def predict(self, text_features, algorythm="Voting Classifier"):
+    def predict(self, text_features, algorythm="Vote Classifier"):
         return self.models[algorythm].classify(text_features)
-
-    
-    def calculate_accuracy(self): pass
-        # show the accuracy of all algorythms - it may change after more authors are added thus they have to be retrained on the new set
-        # authors with just one book should be removed when testing
-    
+   
     def train_models(self):
         for classifier in self.models:
             self.models[classifier].train(self.text_features)
+        self.models["Vote Classifier"] = SklearnClassifier(vote_classifier([self.models[name] for name in self.models]))
     
     def load_models(self):
     # Exception handling
@@ -97,6 +93,11 @@ class Models:
         LSVC_classifier_file.close()
         self.models["Linear SVC Classifier"] = LSVC_classifier
 
+        VOTE_classifier_file = open("./models/VOTE_classifier.pickle", "rb")
+        VOTE_classifier = pickle.load(VOTE_classifier_file)
+        VOTE_classifier_file.close()
+        self.models["Vote Classifier"] = LSVC_classifier
+
     def save_models(self):
         #Exception handling
         #Voting algorythm as well
@@ -117,6 +118,12 @@ class Models:
         KNN_classifier_file = open("./models/KNN_classifier.pickle", "wb")
         pickle.dump(self.models["K-Nearest-Neighbors Classifier"], KNN_classifier_file)
         KNN_classifier_file.close()
+
+        VOTE_classifier_file = open("./models/VOTE_classifier.pickle", "wb")
+        pickle.dump(self.models["Vote Classifier"], VOTE_classifier_file)
+        VOTE_classifier_file.close()
+
+        
 
 
 '''
