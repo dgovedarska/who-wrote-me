@@ -12,6 +12,7 @@ class accuracy:
     _models = {}
 
     def __init__(self):
+        print("Initializing accuracy tests environment...")
         self._text_analysis = stylometry.Text_Analysis()
         self.initialize_models()
         self._train_set = self._text_analysis.text_features_library[0:][::2]
@@ -24,11 +25,9 @@ class accuracy:
         self._models["K-Nearest-Neighbors Classifier"] = SklearnClassifier(KNeighborsClassifier())
         self._models["Linear SVC Classifier"] = SklearnClassifier(LinearSVC())
         
-
     def train_models(self):
         for classifier in self._models:
             self._models[classifier].train(self._train_set)
-        #self._models["Vote Classifier"] = SklearnClassifier(model.vote_classifier([self._models[name] for name in self._models]))
     
     def test_accuracy(self):
         for classifier_name in self._models:

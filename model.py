@@ -15,7 +15,6 @@ from sklearn.svm import LinearSVC
 # TODO hardcoded paths
 # TODO rename them to classifiers
 
-
 class vote_classifier(ClassifierI):
     def __init__(self, classifiers):
         self._classifiers = classifiers

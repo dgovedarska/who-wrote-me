@@ -43,7 +43,6 @@ class StylometryTest(unittest.TestCase):
         r.text_features_library = [({"feature": 4}, "Isaac Asimov"), ({"feature": 5}, "Leo Tolstoy"), ({"feature": 7}, "Leo Tolstoy")]
         self.assertEqual(r.get_authors(), {"Isaac Asimov", "Leo Tolstoy"})
 
-
     def test_parse_author_name(self):
         r = stylometry.Text_Analysis().parse_author_name("JaneAusten")
         self.assertEqual(r, "Jane Austen")
@@ -60,7 +59,6 @@ class StylometryTest(unittest.TestCase):
         r.add_author("Me Me", ["ab ab ab"])
         self.assertIn("Me Me", r.get_authors())
 '''
-
         # Perhaps a unit test for saving and loading the files?
 
 

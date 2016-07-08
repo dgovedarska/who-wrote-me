@@ -8,7 +8,7 @@ algos = {1: "Multinomial Nayve Bayes Classifier", 2: "Logistic Regression Classi
 4: "Linear SVC Classifier", 5: "Vote Classifier"}
 # This will be PyQT4 one day yay.
 
-class ui:
+class Ui:
     def __init__(self, models, text_analysis, accuracy):
         self._models = models
         self._text_analysis = text_analysis
@@ -83,12 +83,7 @@ class ui:
         menu_file.close()
         return menu
         
-print("Welcome to Who Wrote Me v0.1.0")
-text_analysis = stylometry.Text_Analysis()
-models = model.Models(text_analysis.text_features_library)
-accuracy = accuracy.accuracy()
 
-u = ui(models, text_analysis, accuracy)
 
 
 
