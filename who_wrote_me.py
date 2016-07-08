@@ -1,12 +1,11 @@
 import model
 import stylometry
-import gui
+import ui
+import accuracy
 
+print("Welcome to Who Wrote Me v0.1.0")
+text_analysis = stylometry.Text_Analysis()
+models = model.Models(text_analysis.text_features_library)
+accuracy = accuracy.accuracy()
 
-
-
-# load models
-# start program
-
-# here we'll just call the gui
-# this will be the starting file
+u = ui(models, text_analysis, accuracy)

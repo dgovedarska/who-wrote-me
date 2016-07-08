@@ -11,7 +11,6 @@ from nltk.classify.scikitlearn import SklearnClassifier
 
 # Generates lexicographical statistics for a text
 # TODO think what to do about hardcoded paths
-# TODO add exception handling here
 
 BOOKS_DIR = './text_features_library/books'
 
@@ -19,11 +18,10 @@ class Text_Analysis:
     text_features_library = {}
 
     def __init__(self):
+    #TODO move prints to who-wrote-me
         if os.path.exists("./text_features_library/features.pickle"):
             print("Text features library exists. Loading it...")
-            features_file = open("./text_features_library/features.pickle", "rb")
-            self.text_features_library = pickle.load(features_file)
-            features_file.close()
+            self.load_text_features()
             print("Text features library loaded.")
         else:
             # Generating text features in a separate func
@@ -36,16 +34,16 @@ class Text_Analysis:
             print("Text features library generated.")
     
     def text_features(self, text):
-        #TODO This might be stupid
-        text_file = open(text, "rb")
-        text = str(text_file.read())
-        text_file.close()
-        #filtered_text = filter_stop_words(text)
-        
-        return {'lexical diversity': self.lexical_diversity(text),
+        try:
+            with open(text, 'rb') as text_file:
+                text = str(text_file.read())
+                return {'lexical diversity': self.lexical_diversity(text),
                 'average sentence length': self.average_sentence_length(text),
                 'most common word length': self.most_common_word_length(text),
                 'unusual words content fraction': self.unusual_words_content_fraction(text)}
+                
+        except IOError:
+            print("Could not read file:", text)
 
 
     # Various lexicographical analysis functions
@@ -62,15 +60,14 @@ class Text_Analysis:
         return sorted(unusual)
 
     def unusual_words_content_fraction(self, text):
-        textWords = word_tokenize(text)
-        unusual_words = self.find_unusual_words(textWords)
+        text_words = word_tokenize(text)
+        unusual_words = self.find_unusual_words(text_words)
         content = [w for w in word_tokenize(text) if w.lower() in unusual_words]
-        return round(len(content)/len(textWords)*100)
+        return round(len(content)/len(text_words)*100)
 
     def most_common_word_length(self, text):
         filtered_text = self.filter_stop_words(text)
-        word_lengths = [len(w) for w in filtered_text]
-        frequencyDistributionLenghts = FreqDist(len(word) for word in word_tokenize(text))
+        frequencyDistributionLenghts = FreqDist(len(word) for word in filtered_text)
         return frequencyDistributionLenghts.max() # most common word length
 
     def average_sentence_length(self, text):
@@ -101,10 +98,22 @@ class Text_Analysis:
     def save_text_features(self):
         if not os.path.exists("./text_features_library"):
             os.makedirs("./text_features_library")
-        features_file = open("./text_features_library/features.pickle", "wb")
-        pickle.dump(self.text_features_library, features_file)
-        features_file.close()
+        try:
+            with open("./text_features_library/features.pickle", "wb") as features_file:
+                pickle.dump(self.text_features_library, features_file)
+        except IOError:
+            print("Could not save text features library!")
+
+    def load_text_features(self):
+        try:
+            with open("./text_features_library/features.pickle", "rb") as features_file:
+                self.text_features_library = pickle.load(features_file)
+        except IOError:
+            print("Could not load text features library!")
+
 
 
 #This works ok so far :)))
 
+#ta = Text_Analysis()
+#print(ta.text_features("kotka buhta cat dog egg am am am am"))
