@@ -85,7 +85,6 @@ class ui:
         
 print("Welcome to Who Wrote Me v0.1.0")
 text_analysis = stylometry.Text_Analysis()
-print(text_analysis.text_features_library)
 models = model.Models(text_analysis.text_features_library)
 accuracy = accuracy.accuracy()
 

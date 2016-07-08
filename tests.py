@@ -38,10 +38,10 @@ class StylometryTest(unittest.TestCase):
         r = stylometry.Text_Analysis().lexical_diversity("hop hop hop trop trop trop")
         self.assertEqual(r, 3)
 
-#    def test_get_authors(self):
-#        r = stylometry.Text_Analysis()
-#        r.text_features_library = [({"feature": 4}, "Isaac Asimov"), ({"feature": 5}, "Leo Tolstoy"), ({"feature": 7}, "Leo Tolstoy")]
-#       self.assertEqual(r.get_authors(), {"Isaac Asimov", "Leo Tolstoy"})
+    def test_get_authors(self):
+        r = stylometry.Text_Analysis()
+        r.text_features_library = [({"feature": 4}, "Isaac Asimov"), ({"feature": 5}, "Leo Tolstoy"), ({"feature": 7}, "Leo Tolstoy")]
+        self.assertEqual(r.get_authors(), {"Isaac Asimov", "Leo Tolstoy"})
 
 
     def test_parse_author_name(self):
