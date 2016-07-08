@@ -12,12 +12,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 
-# TODO more algos
 # TODO hardcoded paths
-# TODO improve loading and saving
 # TODO rename them to classifiers
 
-#again class and if models are not yet trained - train them and tell the user - can be demonstrated because it's relatively fast
 
 class vote_classifier(ClassifierI):
     def __init__(self, classifiers):
@@ -71,79 +68,31 @@ class Models:
         self.models["Vote Classifier"] = SklearnClassifier(vote_classifier([self.models[name] for name in self.models]))
     
     def load_models(self):
-    # Exception handling
-    # Voting one as well
-        MNB_classifier_file = open("./models/MNB_classifier.pickle", "rb")
-        MNB_classifier = pickle.load(MNB_classifier_file)
-        MNB_classifier_file.close()
-        self.models["Multinomial Nayve Bayes Classifier"] = MNB_classifier
+        self.load_model("Multinomial Nayve Bayes Classifier", "./models/MNB_classifier.pickle")
+        self.load_model("Linear SVC Classifier", "./models/LSVC_classifier.pickle")
+        self.load_model("Logistic Regression Classifier", "./models/LR_classifier.pickle")
+        self.load_model("K-Nearest-Neighbors Classifier", "./models/KNN_classifier.pickle")
+        self.load_model("Vote Classifier", "./models/VOTE_classifier.pickle")
 
-        LR_classifier_file = open("./models/LR_classifier.pickle", "rb")
-        LR_classifier = pickle.load(LR_classifier_file)
-        LR_classifier_file.close()
-        self.models["Logistic Regression Classifier"] = LR_classifier
-
-        KNN_classifier_file = open("./models/KNN_classifier.pickle", "rb")
-        KNN_classifier = pickle.load(KNN_classifier_file)
-        KNN_classifier_file.close()
-        self.models["K-Nearest-Neighbors Classifier"] = KNN_classifier
-
-        LSVC_classifier_file = open("./models/LSVC_classifier.pickle", "rb")
-        LSVC_classifier = pickle.load(LSVC_classifier_file)
-        LSVC_classifier_file.close()
-        self.models["Linear SVC Classifier"] = LSVC_classifier
-
-        VOTE_classifier_file = open("./models/VOTE_classifier.pickle", "rb")
-        VOTE_classifier = pickle.load(VOTE_classifier_file)
-        VOTE_classifier_file.close()
-        self.models["Vote Classifier"] = LSVC_classifier
+    def save_model(self, model_identifier, model_file_name):
+        try:
+            with open(model_file_name, "wb") as model_file:
+                pickle.dump(self.models[model_identifier], model_file)
+        except IOError:
+            print("Could not save model: ", model_identifier)
+    
+    def load_model(self, model_identifier, model_file_name):
+        try:
+            with open(model_file_name, "rb") as model_file:
+               self.models[model_identifier] = pickle.load(model_file)
+        except IOError:
+            print("Could not load model: ", model_identifier)
 
     def save_models(self):
-        #Exception handling
-        #Voting algorythm as well
         if not os.path.exists("./models"):
             os.makedirs("./models")
-        MNB_classifier_file = open("./models/MNB_classifier.pickle", "wb")
-        pickle.dump(self.models["Multinomial Nayve Bayes Classifier"], MNB_classifier_file)
-        MNB_classifier_file.close()
-
-        LSVC_classifier_file = open("./models/LSVC_classifier.pickle", "wb")
-        pickle.dump(self.models["Linear SVC Classifier"], LSVC_classifier_file)
-        LSVC_classifier_file.close()
-
-        LR_classifier_file = open("./models/LR_classifier.pickle", "wb")
-        pickle.dump(self.models["Logistic Regression Classifier"], LR_classifier_file)
-        LR_classifier_file.close()
-
-        KNN_classifier_file = open("./models/KNN_classifier.pickle", "wb")
-        pickle.dump(self.models["K-Nearest-Neighbors Classifier"], KNN_classifier_file)
-        KNN_classifier_file.close()
-
-        VOTE_classifier_file = open("./models/VOTE_classifier.pickle", "wb")
-        pickle.dump(self.models["Vote Classifier"], VOTE_classifier_file)
-        VOTE_classifier_file.close()
-
-        
-
-
-'''
-ta = stylometry.Text_Analysis()
-#print(ta.text_features_library)
-
-m = Models(ta.text_features_library)
-m.save_models()
-files = gutenberg.fileids()
-print(files[20])
-print(ta.text_features(files[20]))
-print(m.predict(ta.text_features(files[20]), "Logistic Regression Classifier"))
-
-models = []
-for key in m.models:
-    models.append(m.models[key])
-
-
-vc = vote_classifier(models)
-#print(vc._classifiers)
-
-print(vc.classify(ta.text_features(files[20])))
-'''
+        self.save_model("Multinomial Nayve Bayes Classifier", "./models/MNB_classifier.pickle")
+        self.save_model("Linear SVC Classifier", "./models/LSVC_classifier.pickle")
+        self.save_model("Logistic Regression Classifier", "./models/LR_classifier.pickle")
+        self.save_model("K-Nearest-Neighbors Classifier", "./models/KNN_classifier.pickle")
+        self.save_model("Vote Classifier", "./models/VOTE_classifier.pickle")
