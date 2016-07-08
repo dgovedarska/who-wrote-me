@@ -21,30 +21,28 @@ class Text_Analysis:
     #TODO move prints to who-wrote-me
         if os.path.exists("./text_features_library/features.pickle"):
             print("Text features library exists. Loading it...")
-            self.load_text_features()
+            features_file = open("./text_features_library/features.pickle", "rb")
+            self.text_features_library = pickle.load(features_file)
+            features_file.close()
             print("Text features library loaded.")
         else:
             # Generating text features in a separate func
             print("Text features library does not exist. Generating it... (this may take a while)")
             book_files = [f for f in listdir(BOOKS_DIR) if isfile(join(BOOKS_DIR, f))]
             labeled_books = ([(fileid, self.parse_author_name(fileid.split('-')[0])) for fileid in book_files])
-            self.text_features_library = [(self.text_features(fileid), author) for (fileid, author) in labeled_books]
+            self.text_features_library = [(self.text_features(join(BOOKS_DIR,fileid)), author) for (fileid, author) in labeled_books]
 
             self.save_text_features()
             print("Text features library generated.")
     
     def text_features(self, text):
-        try:
-            with open(text, 'rb') as text_file:
-                text = str(text_file.read())
-                return {'lexical diversity': self.lexical_diversity(text),
+        text_file = open(text, "rb")
+        text = str(text_file.read())
+        text_file.close()
+        return {'lexical diversity': self.lexical_diversity(text),
                 'average sentence length': self.average_sentence_length(text),
                 'most common word length': self.most_common_word_length(text),
-                'unusual words content fraction': self.unusual_words_content_fraction(text)}
-                
-        except IOError:
-            print("Could not read file:", text)
-
+                'unusual words content fraction': self.unusual_words_content_fraction(text)}         
 
     # Various lexicographical analysis functions
     def filter_stop_words(self, text):
@@ -116,4 +114,4 @@ class Text_Analysis:
 #This works ok so far :)))
 
 #ta = Text_Analysis()
-#print(ta.text_features("kotka buhta cat dog egg am am am am"))
+#print(ta.text_features_library)
