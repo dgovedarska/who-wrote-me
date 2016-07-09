@@ -1,10 +1,10 @@
 import model
 import stylometry
 import accuracy
-import os 
+import os
 
 UIS_LOCATION = './ui/'
-algos = {1: "Multinomial Nayve Bayes Classifier", 2: "Logistic Regression Classifier", 3: "K-Nearest-Neighbors Classifier",
+ALGORYTHMS = {1: "Multinomial Nayve Bayes Classifier", 2: "Logistic Regression Classifier", 3: "K-Nearest-Neighbors Classifier",
 4: "Linear SVC Classifier", 5: "Vote Classifier"}
 # This will be PyQT4 one day yay.
 
@@ -16,45 +16,51 @@ class Ui:
         self.initialize_menus()
         self.initialize_menu_choices()
         self.main_menu()
+
+    def user_choice(self, options):
+        choice = input('Select an option: ')
+        while not choice.isnumeric() or int(choice) not in range(1, options):
+            choice = input('No such option! Try again: ')
+        return int(choice)
     
     def main_menu(self):
         print(self._main_menu)
-        choice = input('Select an option: ')
-        self._main_menu_choices[int(choice)]()
+        choice = self.user_choice(5)
+        self._main_menu_choices[choice]()
 
     def prediction_menu(self): 
         print(self._prediction_menu)
-        choice = input('Select an option: ')
-        self._prediction_menu_choices[int(choice)]()
+        choice = self.user_choice(4)
+        self._prediction_menu_choices[choice]()
 
     def expand_library_menu(self):
         print(self._library_menu)
-        choice = input('Select an option: ')
-        self._library_menu_choices[int(choice)]()
+        choice = self.user_choice(5)
+        self._library_menu_choices[choice]()
 
     def exit(self):
         print("Goodbye!")
 
-    def check_bad_input(self): pass
-
     def add_author(self):
-        # TODO massive error handling
         author_name = input('Enter author name: ')
         text_files_str = input('Enter authors text(s): ')
         text_files = text_files_str.split(' ')
-        self._text_analysis.add_author(author_name, set(text_files))
-
-        print('Author successfuly added!')
+        result = self._text_analysis.add_author(author_name, set(text_files))  
         self.main_menu()
-
+       
     def predict(self):
         print(self._algorythm_menu)
-        choice = int(input('Select an option: '))
-        algorythm = algos[choice]
+        choice = self.user_choice(6)
+        algorythm = ALGORYTHMS[choice]
         book = str(input('Enter book: '))
 
-        print("Author is: ", self._models.predict(self._text_analysis.text_features(book), algorythm))
-        self.prediction_menu()
+        result = self._text_analysis.text_features(book)
+        if result is None:
+            print("Something went wrong! Please try again!")
+            self.prediction_menu()
+        else:
+            print("Author is: ", self._models.predict((result, algorythm)))
+            self.prediction_menu()
 
     def display_accuracy(self):
         self._accuracy.test_accuracy()
@@ -76,17 +82,11 @@ class Ui:
         self._prediction_menu_choices = {1: self.predict, 2: self.main_menu, 3: self.exit}
 
     def load_menu(self, menu_name):
-        #TODO Error handling
         menu_location = os.path.join(UIS_LOCATION, menu_name)
-        menu_file = open(menu_location, 'r')
-        menu = menu_file.read()
-        menu_file.close()
-        return menu
+        try:
+            with open(menu_location, 'r') as menu_file:
+                menu = menu_file.read()
+            return menu
+        except IOError:
+            print("Could not load menus!")
         
-
-
-
-
-
-
-

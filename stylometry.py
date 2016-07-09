@@ -36,13 +36,15 @@ class Text_Analysis:
             print("Text features library generated.")
     
     def text_features(self, text):
-        text_file = open(text, "rb")
-        text = str(text_file.read())
-        text_file.close()
-        return {'lexical diversity': self.lexical_diversity(text),
-                'average sentence length': self.average_sentence_length(text),
-                'most common word length': self.most_common_word_length(text),
-                'unusual words content fraction': self.unusual_words_content_fraction(text)}         
+        try:
+            with open(text, "rb") as text_file:
+                text_content = str(text_file.read())
+                return {'lexical diversity': self.lexical_diversity(text_content),
+                        'average sentence length': self.average_sentence_length(text_content),
+                        'most common word length': self.most_common_word_length(text_content),
+                        'unusual words content fraction': self.unusual_words_content_fraction(text_content)}
+        except IOError:
+            print("Could not open file: ", text)     
 
     # Various lexicographical analysis functions
     def filter_stop_words(self, text):
@@ -80,8 +82,13 @@ class Text_Analysis:
 
     def add_author(self, author, texts):
         for text in texts:
-            self.text_features_library.append((self.text_features(text), author))
+            result = self.text_features(text)
+            if result is None:
+                return
+            else:
+                self.text_features_library.append((result, author))
         self.save_text_features()
+        print('Author successfuly added!')
 
     def get_authors(self):
         authors = []
