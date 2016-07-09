@@ -59,7 +59,7 @@ class Ui:
             print("Something went wrong! Please try again!")
             self.prediction_menu()
         else:
-            print("Author is: ", self._models.predict((result, algorythm)))
+            print("Author is: ", self._models.predict(result, algorythm))
             self.prediction_menu()
 
     def display_accuracy(self):

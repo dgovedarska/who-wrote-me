@@ -66,7 +66,29 @@ class StylometryTest(unittest.TestCase):
 '''
         # Perhaps a unit test for saving and loading the files?
 
+class ModelTest(unittest.TestCase):
+    def test_predict(self):
+        text_analysis = stylometry.Text_Analysis()
+        models = model.Models(text_analysis.text_features_library)
+        r = models.predict({'lexical diversity': 1, 'average sentence length': 10, 'most common word length': 3, 'unusual words content fraction': 10},
+        "Logistic Regression Classifier")
+        self.assertIsInstance(r, str)
 
+        r = models.predict({'lexical diversity': 1, 'average sentence length': 10, 'most common word length': 3, 'unusual words content fraction': 10},
+        "K-Nearest-Neighbors Classifier")
+        self.assertIsInstance(r, str)
+
+        r = models.predict({'lexical diversity': 1, 'average sentence length': 10, 'most common word length': 3, 'unusual words content fraction': 10},
+        "Linear SVC Classifier")
+        self.assertIsInstance(r, str)
+
+        r = models.predict({'lexical diversity': 1, 'average sentence length': 10, 'most common word length': 3, 'unusual words content fraction': 10},
+        "Multinomial Nayve Bayes Classifier")
+        self.assertIsInstance(r, str)
+
+        r = models.predict({'lexical diversity': 1, 'average sentence length': 10, 'most common word length': 3, 'unusual words content fraction': 10},
+        "Vote Classifier")
+        self.assertIsInstance(r, str)
 
 
 

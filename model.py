@@ -5,7 +5,7 @@ import os
 from nltk.classify.scikitlearn import SklearnClassifier
 from nltk.classify import ClassifierI
 from nltk.corpus import gutenberg
-from statistics import mode
+from statistics import mode, StatisticsError
 
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -18,24 +18,18 @@ from sklearn.svm import LinearSVC
 class vote_classifier(ClassifierI):
     def __init__(self, classifiers):
         self._classifiers = classifiers
+        #print(self._classifiers)
     
     def classify(self, text_features):
         votes = []
-        for classifier in self._classifiers:
+        for classifier in self._classifiers: 
             vote = classifier.classify(text_features)
             votes.append(vote)
-        print(votes)
-        print(mode(votes))
-        return mode(votes)
-    
-    def confidence(self, features):
-        votes = []
-        for classifier in self._classifiers:
-            votes.append(classifier.predict(text_features))
-        
-        choice_votes = votes.count(mode(votes))
-        confidence_percent = choice_votes / len(votes)
-        return confidence_percent
+        try:
+            m = mode(votes)
+            return m
+        except StatisticsError:
+            return votes[0]
 
 class Models:
     models = {} # that's a dict
@@ -62,9 +56,11 @@ class Models:
         return self.models[algorythm].classify(text_features)
    
     def train_models(self):
+        voters = []
         for classifier in self.models:
             self.models[classifier].train(self.text_features)
-        self.models["Vote Classifier"] = SklearnClassifier(vote_classifier([self.models[name] for name in self.models]))
+            voters.append(self.models[classifier])
+        self.models["Vote Classifier"] = vote_classifier(voters)
     
     def load_models(self):
         self.load_model("Multinomial Nayve Bayes Classifier", "./models/MNB_classifier.pickle")
