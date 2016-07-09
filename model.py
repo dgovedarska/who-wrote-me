@@ -12,13 +12,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
 
-# TODO hardcoded paths
-# TODO rename them to classifiers
-
-class vote_classifier(ClassifierI):
+class VoteClassifier(ClassifierI):
     def __init__(self, classifiers):
         self._classifiers = classifiers
-        #print(self._classifiers)
     
     def classify(self, text_features):
         votes = []
@@ -32,7 +28,7 @@ class vote_classifier(ClassifierI):
             return votes[0]
 
 class Models:
-    models = {} # that's a dict
+    models = {}
     text_features = []
 
     def __init__(self, text_features):
@@ -60,7 +56,10 @@ class Models:
         for classifier in self.models:
             self.models[classifier].train(self.text_features)
             voters.append(self.models[classifier])
-        self.models["Vote Classifier"] = vote_classifier(voters)
+        """
+        Vote Classifier is constructed from already trained classifiers!
+        """
+        self.models["Vote Classifier"] = VoteClassifier(voters)
     
     def load_models(self):
         self.load_model("Multinomial Nayve Bayes Classifier", "./models/MNB_classifier.pickle")

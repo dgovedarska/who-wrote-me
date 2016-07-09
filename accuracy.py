@@ -15,6 +15,11 @@ class accuracy:
         print("Initializing accuracy tests environment...")
         self._text_analysis = stylometry.Text_Analysis()
         self.initialize_models()
+        """
+        Train set and test set are equal parts of the original text features set.
+        Original set is sorted alphabetically and we want every author appearing
+        in both sets, so we take the odd and even elements for the sets.
+        """
         self._train_set = self._text_analysis.text_features_library[0:][::2]
         self._test_set = self._text_analysis.text_features_library[1:][::2]
         self.train_models()
@@ -32,4 +37,5 @@ class accuracy:
     def test_accuracy(self):
         for classifier_name in self._models:
             classifier = self._models[classifier_name]
-            print(classifier_name + " Algorithm accuracy percent:", (nltk.classify.accuracy(classifier, self._test_set))*100)
+            print(classifier_name + " Algorithm accuracy percent:", 
+            (nltk.classify.accuracy(classifier, self._test_set))*100)
