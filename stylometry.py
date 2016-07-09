@@ -18,10 +18,12 @@ class Text_Analysis:
     def __init__(self):
         if os.path.exists(FEATURES_FILE):
             print("Text features library exists. Loading it...")
-            features_file = open(FEATURES_FILE, "rb")
-            self.text_features_library = pickle.load(features_file)
-            features_file.close()
-            print("Text features library loaded.")
+            try:
+                with open (FEATURES_FILE, "rb") as features_file:
+                    self.text_features_library = pickle.load(features_file)
+                    print("Text features library loaded.")
+            except IOError:
+                print("Could not load text features library.")
         else:
             print("Text features library does not exist. Generating it... (this may take a while)")
             book_files = [f for f in listdir(BOOKS_DIR) if isfile(join(BOOKS_DIR, f))]

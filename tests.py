@@ -9,7 +9,6 @@ text_analysis = stylometry.Text_Analysis()
 models = model.Models(text_analysis.text_features_library)
 
 class StylometryTest(unittest.TestCase):
-
     def test_filter_stop_words(self):
         r = text_analysis.filter_stop_words("I am the Cat!")
         self.assertEqual(r, ['I', 'Cat', '!'])
